@@ -1,6 +1,6 @@
 @charset "utf-8";
 /* =========================================================
-   쓸모랩 (Sseulmo Lab) — 공통 스타일시트
+   딴짓플레이 (Ddanjit Play) — 공통 스타일시트
    브랜드 색을 바꾸려면 아래 :root 토큰만 수정하면 된다.
    ========================================================= */
 
@@ -273,6 +273,7 @@ small { font-size: .82rem; }
 }
 .tool-icon.coral { background: var(--accent-soft); }
 .tool-icon.green { background: var(--ok-soft); }
+.tool-icon.slate { background: #e8edf5; }
 .tool-card h3 { margin: 0; font-size: 1.06rem; }
 .tool-card p {
   margin: 0;
@@ -1058,6 +1059,7 @@ small { font-size: .82rem; }
     margin-left: 0;
     gap: 2px;
     justify-content: space-between;
+    flex-wrap: wrap;
     overflow-x: visible;
   }
   .nav a { padding: 8px; font-size: .86rem; }

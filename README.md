@@ -1,6 +1,6 @@
-# 쓸모랩 (Sseulmo Lab) — 미니 웹 허브
+# 딴짓플레이 (Ddanjit Play) — 미니 웹 허브
 
-생활 계산기 2종 + 트렌드 테스트 1종으로 구성한 **순수 정적(HTML/CSS/JS) 멀티 페이지 사이트**입니다.
+생활 계산기 2종 + 트렌드 테스트 1종 + 추리 게임 1종으로 구성한 **순수 정적(HTML/CSS/JS) 멀티 페이지 사이트**입니다.
 백엔드·빌드 도구·프레임워크가 없어서 GitHub Pages / Cloudflare Pages / Vercel 어디에나 폴더째 올리면 바로 동작합니다.
 
 ```
@@ -12,6 +12,10 @@ web_hub/
 ├── trend-2026/index.html   2026 연말 트렌드 고사 (10문항 퀴즈 + 해설 글)
 ├── jeonse-calc/index.html  전세 vs 월세(반전세) 실질 주거비 계산기 + 해설
 ├── stock-calc/index.html   주식·ETF 물타기 평단가·목표가 계산기 + 해설
+├── last-backup/            〈마지막 백업〉 EP.01 — 클라우드 복구 콘솔 추리 게임
+│   ├── index.html          게임 화면 + 플레이 가이드 글
+│   ├── game.css            콘솔 다크 테마 (게임 영역 한정)
+│   └── game.js             파일 뷰어·암호 퍼즐·힌트·최종 보고서
 ├── assets/
 │   ├── style.css           공통 스타일시트 (브랜드 색은 :root 토큰)
 │   ├── common.js           숫자 포맷·클립보드 복사 등 공통 유틸
@@ -39,20 +43,20 @@ python3 -m http.server 8080
 | **Cloudflare Pages / Vercel** | 빌드 명령 없이 output directory를 `web_hub`로 지정해 업로드. |
 | **직접 서버** | 폴더를 그대로 웹 루트에 복사. |
 
-배포 후 **도메인에 맞춰 canonical·OG·sitemap의 `sseulmolab.com`을 실제 도메인으로 바꿔 주세요.**
+배포 후 **도메인에 맞춰 canonical·OG·sitemap의 `ddanjitplay.com`을 실제 도메인으로 바꿔 주세요.**
 
 ## 이름·도메인 바꾸기 (가칭 → 실제 이름)
 
 브랜드 이름은 공통 헤더/푸터/메타 블록에만 나타나도록 구조화해 두었습니다. 아래 3가지를 일괄 치환하면 됩니다.
 
-1. `쓸모랩` → 새 한글 이름
-2. `Sseulmo Lab` / `sseulmolab` → 새 영문 이름·도메인
-3. `hello@sseulmolab.com` → 새 문의 메일
+1. `딴짓플레이` → 새 한글 이름
+2. `Ddanjit Play` / `ddanjitplay` → 새 영문 이름·도메인
+3. `hello@ddanjitplay.com` → 새 문의 메일
 4. 헤더의 `.brand-mark` 안 글자(`쓸`)와 `assets/favicon.svg` 색/모양
 
 ```bash
 cd web_hub
-grep -rl "쓸모랩\|sseulmolab\|Sseulmo Lab" . | xargs sed -i 's/쓸모랩/새이름/g; s/sseulmolab/newdomain.com/g; s/Sseulmo Lab/New Name/g'
+grep -rl "딴짓플레이\|ddanjitplay\|Ddanjit Play" . | xargs sed -i 's/딴짓플레이/새이름/g; s/ddanjitplay/newdomain.com/g; s/Ddanjit Play/New Name/g'
 ```
 
 브랜드 색을 바꾸려면 `assets/style.css`의 `:root` 변수(`--brand`, `--accent` 등)만 수정하세요.
@@ -83,6 +87,16 @@ headless Chromium(Playwright) + 로컬 `python3 -m http.server` 환경에서 확
 
 상세 로그: `screenshots/test-report.txt`
 스크린샷: `screenshots/mobile-*.png`(390폭), `screenshots/desktop-*.png`(1280폭), `screenshots/el-*.png`(결과 카드 단위)
+
+### 〈마지막 백업〉 EP.01 풀 플레이 검수 (2026-11-21)
+
+`last-backup/`은 390×844·1280×800 두 해상도에서 **처음부터 엔딩까지 자동 플레이**로 확인했습니다. 실패 0건, JS 예외·콘솔 에러·가로 오버플로 0건.
+
+- 파일 8행(복구 가능 7 + 복구 불가 1) 표시, 복구 로그/채팅/영수증/사진(EXIF·번호판 확대)/음성메모(파형·대본 진행·배속·전체 대본) 렌더 확인
+- 잠긴 파일 2개: 오답 입력 시 에러·잠금 유지 → 힌트 1·2단계 모달 → 정답(4471 / PROMISE) 해금 확인
+- 진행도 7/7 도달 시 최종 보고서 버튼 활성화 → 오답 피드백 → 정답 제출 → 등급·플레이 타임·힌트 수 엔딩 카드 → 결과 복사(클립보드 값 검증)
+
+상세 로그: `screenshots/backup-test-report.txt` / 스크린샷: `screenshots/backup-mobile-*.png`, `screenshots/backup-desktop-*.png`
 
 ## 라이선스·출처
 
