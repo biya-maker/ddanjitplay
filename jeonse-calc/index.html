@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <!-- ===== SITE META ===== -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>전세 vs 월세(반전세) 실질 주거비 계산기 — 대출이자·기회비용 포함 | 쓸모랩</title>
+  <meta name="description" content="전세 보증금·대출 금리·월세·관리비를 넣으면 대출 이자와 기회비용까지 반영한 월 실질 부담, 연 총비용, 손익분기 전월세 전환율을 바로 계산합니다.">
+  <meta name="keywords" content="전세 월세 계산기, 반전세 계산, 전월세 전환율, 전세대출 이자, 기회비용, 실질 주거비">
+  <meta name="author" content="쓸모랩">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://sseulmolab.com/jeonse-calc/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="쓸모랩">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="전세 vs 월세 실질 주거비 계산기">
+  <meta property="og:description" content="대출 이자와 기회비용까지 넣은 같은 기준으로 전세와 반전세를 비교합니다.">
+  <meta property="og:url" content="https://sseulmolab.com/jeonse-calc/">
+  <meta property="article:modified_time" content="2026-11-21">
+  <meta name="twitter:card" content="summary">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <!-- ===== /SITE META ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "쓸모랩", "item": "https://sseulmolab.com/" },
+      { "@type": "ListItem", "position": 2, "name": "전세 vs 월세 계산기", "item": "https://sseulmolab.com/jeonse-calc/" }
+    ]
+  }
+  </script>
+</head>
+<body>
+<a class="skip-link" href="#main">본문으로 바로 가기</a>
+
+<!-- ===== 공통 헤더 ===== -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="../index.html" aria-label="쓸모랩 홈">
+      <span class="brand-mark" aria-hidden="true">쓸</span>
+      쓸모랩<span class="brand-dot">.</span>
+    </a>
+    <nav class="nav" aria-label="주요 메뉴">
+      <a href="../trend-2026/index.html">트렌드 고사</a>
+      <a href="index.html" aria-current="page">전세·월세</a>
+      <a href="../stock-calc/index.html">주식 평단</a>
+      <a href="../about.html">소개</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="page-head">
+    <div class="wrap">
+      <div class="crumbs"><a href="../index.html">홈</a> › 전세 vs 월세 계산기</div>
+      <h1>전세 vs 월세, 실질 주거비로 비교하기</h1>
+      <p>전세는 월세가 0원처럼 보이지만 대출 이자와 내 돈의 기회비용이 듭니다. 두 선택지를 같은 항목으로 펼쳐 놓고 월 부담과 연 총비용을 비교합니다.</p>
+    </div>
+  </div>
+
+  <section class="section" style="padding-top:16px">
+    <div class="wrap">
+      <div class="tool-shell">
+        <div class="calc-layout">
+
+          <form id="calcForm" autocomplete="off" novalidate>
+            <div class="field-group">
+              <div class="field-group-title"><span class="dot" aria-hidden="true"></span>전세 조건 <small>보증금을 빌리는 쪽</small></div>
+
+              <label class="field">
+                <span>전세 보증금</span>
+                <div class="input-row">
+                  <div class="input-wrap">
+                    <input id="dJeonse" type="text" inputmode="numeric" value="30000" aria-describedby="dJeonseHint">
+                    <span class="unit">만원</span>
+                  </div>
+                </div>
+                <small class="field-hint" id="dJeonseHint">3억</small>
+              </label>
+
+              <label class="field">
+                <span>전세대출 금액</span>
+                <div class="input-row">
+                  <div class="input-wrap">
+                    <input id="loan" type="text" inputmode="numeric" value="20000" aria-describedby="loanHint">
+                    <span class="unit">만원</span>
+                  </div>
+                </div>
+                <small class="field-hint" id="loanHint">2억 · 자기자본 1억</small>
+              </label>
+
+              <div class="input-row" style="gap:10px">
+                <label class="field" style="flex:1">
+                  <span>대출 금리 (연)</span>
+                  <div class="input-wrap">
+                    <input id="loanRate" type="text" inputmode="decimal" value="4.5">
+                    <span class="unit">%</span>
+                  </div>
+                </label>
+                <label class="field" style="flex:1">
+                  <span>전세 관리비 (월)</span>
+                  <div class="input-wrap">
+                    <input id="maintJ" type="text" inputmode="numeric" value="8">
+                    <span class="unit">만원</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <div class="field-group-title"><span class="dot coral" aria-hidden="true"></span>월세·반전세 조건</div>
+
+              <label class="field">
+                <span>월세 보증금</span>
+                <div class="input-row">
+                  <div class="input-wrap">
+                    <input id="dWolse" type="text" inputmode="numeric" value="10000" aria-describedby="dWolseHint">
+                    <span class="unit">만원</span>
+                  </div>
+                </div>
+                <small class="field-hint" id="dWolseHint">1억 · 전세와 차액 2억</small>
+              </label>
+
+              <div class="input-row" style="gap:10px">
+                <label class="field" style="flex:1">
+                  <span>월세</span>
+                  <div class="input-wrap">
+                    <input id="rent" type="text" inputmode="numeric" value="80">
+                    <span class="unit">만원</span>
+                  </div>
+                </label>
+                <label class="field" style="flex:1">
+                  <span>월세 관리비 (월)</span>
+                  <div class="input-wrap">
+                    <input id="maintW" type="text" inputmode="numeric" value="12">
+                    <span class="unit">만원</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <div class="field-group-title"><span class="dot green" aria-hidden="true"></span>공통 가정</div>
+              <div class="input-row" style="gap:10px">
+                <label class="field" style="flex:1">
+                  <span>자기자본 기회비용 (연)</span>
+                  <div class="input-wrap">
+                    <input id="oppRate" type="text" inputmode="decimal" value="3.0">
+                    <span class="unit">%</span>
+                  </div>
+                  <small class="field-hint">예금·채권 등 무위험 수익률</small>
+                </label>
+                <label class="field" style="flex:1">
+                  <span>거주 기간</span>
+                  <div class="input-wrap">
+                    <input id="years" type="text" inputmode="numeric" value="2">
+                    <span class="unit">년</span>
+                  </div>
+                  <small class="field-hint">누적 비용 비교 기준</small>
+                </label>
+              </div>
+            </div>
+
+            <div class="cta-row">
+              <button class="btn btn-primary" type="button" id="resetBtn">예시값으로 초기화</button>
+            </div>
+          </form>
+
+          <div class="results" id="results" aria-live="polite">
+            <div class="result-hero">
+              <div class="verdict" id="verdictLabel">계산 중…</div>
+              <div class="big" id="verdictBig">—</div>
+              <p class="sub" id="verdictSub"></p>
+            </div>
+
+            <dl class="stat-grid">
+              <div class="stat hl">
+                <dt>전세 월 실질부담</dt>
+                <dd id="sJeonse">—</dd>
+              </div>
+              <div class="stat hl">
+                <dt>월세 월 실질부담</dt>
+                <dd id="sWolse">—</dd>
+              </div>
+              <div class="stat">
+                <dt>현재 전환율</dt>
+                <dd id="sMarketRate">—</dd>
+              </div>
+              <div class="stat">
+                <dt>손익분기 전환율</dt>
+                <dd id="sBeRate">—</dd>
+              </div>
+            </dl>
+
+            <div class="bars" aria-hidden="false">
+              <div class="bar-row">
+                <div class="bar-label"><span>전세</span><span id="barJeonseLabel">—</span></div>
+                <div class="bar-track">
+                  <div class="bar-seg seg-jeonse-a" id="bjA"></div>
+                  <div class="bar-seg seg-jeonse-b" id="bjB"></div>
+                  <div class="bar-seg seg-jeonse-c" id="bjC"></div>
+                </div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label"><span>월세·반전세</span><span id="barWolseLabel">—</span></div>
+                <div class="bar-track">
+                  <div class="bar-seg seg-wolse-a" id="bwA"></div>
+                  <div class="bar-seg seg-wolse-b" id="bwB"></div>
+                  <div class="bar-seg seg-wolse-c" id="bwC"></div>
+                </div>
+              </div>
+              <div class="legend">
+                <span><i class="seg-jeonse-a"></i>전세대출 이자</span>
+                <span><i class="seg-jeonse-b"></i>자기자본 기회비용</span>
+                <span><i class="seg-jeonse-c"></i>관리비</span>
+                <span><i class="seg-wolse-a"></i>월세</span>
+              </div>
+            </div>
+
+            <div class="formula" id="formulaBox"></div>
+            <p class="note-inline" id="rateNote"></p>
+          </div>
+
+        </div>
+      </div>
+
+      <p class="disclaimer">
+        이 계산기는 세금, 중개보수, 이사비, 보증보험료, 대출 부대비용을 포함하지 않습니다. 기회비용은 사용자가 정한 연 수익률을 단순 적용한 값이며, 실제 대출은 금리 변동과 상환 방식(원리금균등·만기일시)에 따라 달라집니다. 계약 전 반드시 계약서와 금융기관 조건을 확인하세요.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:6px">
+    <div class="wrap">
+      <article class="article">
+        <p class="updated" style="margin-top:0">2026년 11월 21일 기준 · 읽는 시간 약 5분</p>
+        <h2 style="border-top:0;padding-top:0;margin-top:0">전세·반전세 비교할 때 꼭 따져야 할 3가지</h2>
+        <p>이사할 집을 정할 때 가장 흔한 실수는 <strong>매달 나가는 현금만 보고 비교하는 것</strong>입니다. 전세는 매달 월세가 빠져나가지 않지만, 그 돈을 마련하기 위해 대출을 썼다면 이자가 나가고, 내 돈을 묶어 두는 동안 포기한 수익도 있습니다. 반대로 월세는 매달 현금이 나가지만 목돈을 덜 묶습니다. 두 방식의 우열은 ‘얼마를 어디서 끌어오는가’에 따라 뒤집히기 때문에, 숫자를 같은 항목으로 펼쳐 놓아야 합니다. 아래 세 가지가 그 기준입니다.</p>
+
+        <h2>1. 전월세 전환율 — 월세와 보증금의 교환 비율</h2>
+        <p>전월세 전환율은 “보증금을 깎는 대신 월세를 얼마나 더 받는가”를 나타내는 비율입니다. 계산은 간단합니다. <strong>전환율(%) = (월세 × 12) ÷ (전세보증금 − 월세보증금) × 100</strong>. 예를 들어 전세보증금이 3억, 월세보증금이 1억, 월세가 80만 원이라면 (80만 × 12) ÷ 2억 × 100 = <strong>4.8%</strong>입니다. 즉 보증금 2억을 빼앗기는 대신 연 4.8%의 이자를 받는 구조와 같습니다.</p>
+        <p>이 숫자를 내 상황과 비교해야 합니다. 전세대출 금리가 4.5%라면, 보증금 2억을 유지하는 비용은 연 900만 원입니다. 그런데 월세는 연 960만 원이니 전세가 조금 유리합니다. 반대로 대출 금리가 5.5%라면 전세 쪽 비용이 연 1,100만 원이 되어 월세가 유리해집니다. 이 계산기에서 보여 주는 <strong>손익분기 전환율</strong>은 “월세 쪽 총비용이 전세 쪽 총비용과 같아지는 전환율”입니다. 실제 전환율이 이보다 높으면 전세가, 낮으면 월세가 유리합니다. 참고로 전월세 전환율에는 법정 상한이 있어 기준금리에 연동된 폭을 넘길 수 없도록 정해져 있으니, 제시된 전환율이 지나치게 높다면 한 번 확인해 볼 필요가 있습니다.</p>
+
+        <h2>2. 기회비용 — 전세보증금도 ‘공짜’가 아니다</h2>
+        <p>전세보증금 중 대출이 아닌 내 돈(자기자본)은 어디론가 묶여 있는 돈입니다. 그 돈을 예금이나 채권에 넣었다면 받았을 이자를 포기한 셈이고, 이것이 기회비용입니다. 이 계산기의 기본값은 연 3.0%입니다. 요즘 같은 금리 환경에서 무위험에 가까운 수익률을 기준으로 잡은 것이고, 투자 성향이 공격적이라면 더 높게 잡아도 됩니다. 다만 기대수익률을 7~8%로 잡으면 전세가 거의 항상 불리하게 나오는데, 그 수익률이 보장되지 않는다면 비교가 과장됩니다. <strong>비교 목적이라면 실제로 안전하게 굴릴 수 있는 수익률</strong>을 넣는 편이 현실적입니다.</p>
+        <p>기회비용은 반전세 쪽에도 붙습니다. 월세보증금 1억도 묶이는 돈이기 때문입니다. 그래서 표를 볼 때는 전세의 ‘자기자본 기회비용’과 월세의 ‘보증금 기회비용’을 함께 봐야 합니다. 한쪽만 계산하면 반전세가 실제보다 싸게 보입니다. 여기에 관리비 항목도 같은 기준으로 맞춰야 합니다. 전세는 관리비에 수도·전기·가스를 포함하지 않는 경우가 많고, 월세 매물은 관리비에 인터넷·청소·공용전기 등이 묶여 있는 경우가 많아 단순 비교가 어긋납니다. 두 매물의 관리비 포함 항목을 확인해 같은 범위로 넣는 것이 정확합니다.</p>
+
+        <h2>3. 보증보험과 반환 위험 — 숫자 밖의 비용</h2>
+        <p>전세는 목돈을 맡기는 계약이라 <strong>돌려받지 못할 위험</strong>이 비용으로 따라옵니다. 이 위험을 줄이는 장치가 전세보증금반환보증(HUG·SGI 등)입니다. 가입 요건은 보증금 한도, 주택 가격 대비 보증금 비율, 근저당 설정 여부 등으로 정해지고 시기마다 바뀌므로, 계약 전에 해당 기관의 최신 조건을 확인해야 합니다. 보증료는 보증금과 기간에 따라 달라지며, 이 계산기의 결과에는 포함되어 있지 않습니다.</p>
+        <p>계약 실무에서도 순서가 중요합니다. 계약 전에는 등기부등본에서 근저당·가압류를 확인하고, 계약 후에는 <strong>전입신고와 확정일자</strong>를 같은 날 처리해 대항력과 우선변제권을 확보합니다. 잔금일에는 등기부를 다시 떼어 새로 생긴 담보가 없는지 확인하는 것이 안전합니다. 반전세라면 월세를 현금으로 주는 경우 영수증이나 계좌 이체 기록을 남기고, 관리비 항목과 인상 조건을 계약서에 적어 두세요. 이런 항목들은 계산 결과를 몇만 원 바꾸는 수준이 아니라, 보증금 전액이 걸린 문제입니다.</p>
+
+        <div class="callout warn">
+          <strong>이 계산기를 쓰는 순서</strong><br>
+          ① 같은 조건의 전세 매물과 반전세 매물을 하나씩 고릅니다. ② 두 매물의 보증금·월세·관리비를 넣습니다. ③ 대출 가능 금액과 실제 금리를 넣습니다. ④ 기회비용은 안전하게 굴릴 수 있는 수익률로 둡니다. ⑤ 월 차이와 손익분기 전환율을 확인한 뒤, 보증보험료·중개보수·이사비를 더해 최종 판단합니다.
+        </div>
+      </article>
+
+      <div class="section" style="padding-bottom:0">
+        <div class="section-head"><h2>다른 도구도 써 보세요</h2></div>
+        <div class="card-grid">
+          <a class="tool-card" href="../stock-calc/index.html">
+            <span class="tool-icon green" aria-hidden="true">📉</span>
+            <h3>주식 물타기 계산기</h3>
+            <p>추가 매수 후 평단가·손익분기·목표 매도가.</p>
+            <span class="tool-go">계산해 보기</span>
+          </a>
+          <a class="tool-card" href="../trend-2026/index.html">
+            <span class="tool-icon coral" aria-hidden="true">🎯</span>
+            <h3>2026 트렌드 고사</h3>
+            <p>올해의 밈·신조어 10문항, 점수와 해설.</p>
+            <span class="tool-go">테스트 시작</span>
+          </a>
+          <a class="tool-card" href="../index.html">
+            <span class="tool-icon" aria-hidden="true">🗂️</span>
+            <h3>쓸모랩 홈</h3>
+            <p>전체 도구 목록과 사이트 소개.</p>
+            <span class="tool-go">둘러보기</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ===== 공통 푸터 ===== -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      쓸모랩
+      <span>생활 계산기와 가벼운 테스트로 매일의 판단을 조금 더 쉽게.</span>
+    </div>
+    <nav class="footer-links" aria-label="바닥글 메뉴">
+      <a href="../about.html">사이트 소개</a>
+      <a href="../privacy.html">개인정보처리방침</a>
+      <a href="../trend-2026/index.html">트렌드 고사</a>
+      <a href="../jeonse-calc/index.html">전세·월세</a>
+      <a href="../stock-calc/index.html">주식 평단</a>
+      <a href="mailto:hello@sseulmolab.com">문의</a>
+    </nav>
+    <div class="footer-legal">
+      <p>쓸모랩의 계산 결과는 입력값에 기반한 참고용 추정치이며 금융·법률·투자 자문이 아닙니다. 실제 계약 조건과 금융기관 기준에 따라 달라질 수 있습니다.</p>
+      <p>© <span data-year>2026</span> 쓸모랩 (Sseulmo Lab) · 문의 hello@sseulmolab.com</p>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/common.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var ids = ["dJeonse", "loan", "loanRate", "maintJ", "dWolse", "rent", "maintW", "oppRate", "years"];
+  var input = {};
+  ids.forEach(function (id) { input[id] = document.getElementById(id); });
+
+  var DEFAULTS = {
+    dJeonse: "30000", loan: "20000", loanRate: "4.5", maintJ: "8",
+    dWolse: "10000", rent: "80", maintW: "12", oppRate: "3.0", years: "2"
+  };
+
+  var out = {
+    verdictLabel: document.getElementById("verdictLabel"),
+    verdictBig: document.getElementById("verdictBig"),
+    verdictSub: document.getElementById("verdictSub"),
+    sJeonse: document.getElementById("sJeonse"),
+    sWolse: document.getElementById("sWolse"),
+    sMarketRate: document.getElementById("sMarketRate"),
+    sBeRate: document.getElementById("sBeRate"),
+    barJeonseLabel: document.getElementById("barJeonseLabel"),
+    barWolseLabel: document.getElementById("barWolseLabel"),
+    formula: document.getElementById("formulaBox"),
+    rateNote: document.getElementById("rateNote")
+  };
+
+  function won(man) { return SL.formatWon(Math.round(man * 10000)); }
+  function pct(v) {
+    var s = (Math.round(v * 100) / 100).toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
+    return s + "%";
+  }
+
+  function readInputs() {
+    return {
+      dJ: Math.max(0, SL.num(input.dJeonse.value)),
+      loan: Math.max(0, SL.num(input.loan.value)),
+      loanRate: Math.max(0, SL.num(input.loanRate.value)),
+      maintJ: Math.max(0, SL.num(input.maintJ.value)),
+      dW: Math.max(0, SL.num(input.dWolse.value)),
+      rent: Math.max(0, SL.num(input.rent.value)),
+      maintW: Math.max(0, SL.num(input.maintW.value)),
+      oppRate: Math.max(0, SL.num(input.oppRate.value)),
+      years: Math.max(0.5, SL.num(input.years.value, 2))
+    };
+  }
+
+  function updateHints(v) {
+    document.getElementById("dJeonseHint").textContent =
+      v.dJ ? SL.formatMan(v.dJ) : "보증금을 입력하세요";
+    var loanCapped = Math.min(v.loan, v.dJ);
+    document.getElementById("loanHint").textContent =
+      v.loan > v.dJ
+        ? "보증금보다 큽니다. 보증금 한도(" + SL.formatMan(v.dJ) + ")로 계산합니다"
+        : SL.formatMan(loanCapped) + " · 자기자본 " + SL.formatMan(v.dJ - loanCapped);
+    var gap = v.dJ - v.dW;
+    document.getElementById("dWolseHint").textContent =
+      gap > 0 ? SL.formatMan(v.dW) + " · 전세와 차액 " + SL.formatMan(gap)
+              : SL.formatMan(v.dW) + " · 전세보다 보증금이 큽니다";
+  }
+
+  function setBar(el, widthPct, label) {
+    el.style.width = Math.max(0, widthPct) + "%";
+    el.textContent = widthPct >= 12 ? label : "";
+  }
+
+  function calculate() {
+    var v = readInputs();
+    updateHints(v);
+
+    var loan = Math.min(v.loan, v.dJ);
+    var ownCapital = Math.max(0, v.dJ - loan);
+
+    var interest = loan * (v.loanRate / 100) / 12;
+    var oppJ = ownCapital * (v.oppRate / 100) / 12;
+    var monthlyJ = interest + oppJ + v.maintJ;
+
+    var oppW = v.dW * (v.oppRate / 100) / 12;
+    var monthlyW = v.rent + v.maintW + oppW;
+
+    var diff = monthlyW - monthlyJ;           // >0 이면 전세가 저렴
+    var annualDiff = diff * 12;
+    var termDiff = annualDiff * v.years;
+
+    out.sJeonse.textContent = won(monthlyJ);
+    out.sWolse.textContent = won(monthlyW);
+
+    /* 손익분기 전환율: 월세 총비용이 전세 총비용과 같아지는 전환율 */
+    var gap = v.dJ - v.dW;
+    var beRate = gap > 0 ? ((monthlyJ - v.maintW - oppW) * 12) / gap * 100 : null;
+    var marketRate = gap > 0 ? (v.rent * 12) / gap * 100 : null;
+
+    out.sMarketRate.textContent = marketRate === null ? "—" : pct(marketRate);
+    out.sBeRate.textContent = beRate === null ? "—" : pct(beRate);
+
+    /* 판정 */
+    if (Math.abs(diff) < 0.5) {
+      out.verdictLabel.textContent = "거의 비슷합니다";
+      out.verdictBig.textContent = "월 차이 " + won(Math.abs(diff));
+      out.verdictSub.textContent = "두 선택지의 월 실질부담이 사실상 같습니다. 관리비 포함 항목과 보증보험료를 비교해 결정하세요.";
+    } else if (diff > 0) {
+      out.verdictLabel.innerHTML = '<span class="badge ok">전세가 유리</span>';
+      out.verdictBig.textContent = "월 " + won(diff) + " 절약";
+      out.verdictSub.textContent = "연 " + won(annualDiff) + " · " + v.years + "년 누적 " +
+        won(termDiff) + " 차이입니다. (월세 쪽 부담이 더 큼)";
+    } else {
+      out.verdictLabel.innerHTML = '<span class="badge accent">월세가 유리</span>';
+      out.verdictBig.textContent = "월 " + won(-diff) + " 절약";
+      out.verdictSub.textContent = "연 " + won(-annualDiff) + " · " + v.years + "년 누적 " +
+        won(-termDiff) + " 차이입니다. (전세 쪽 부담이 더 큼)";
+    }
+
+    /* 바 */
+    var scale = Math.max(monthlyJ, monthlyW, 1);
+    var jPct = function (x) { return (x / scale) * 100; };
+    setBar(document.getElementById("bjA"), jPct(interest), "이자");
+    setBar(document.getElementById("bjB"), jPct(oppJ), "기회비용");
+    setBar(document.getElementById("bjC"), jPct(v.maintJ), "관리비");
+    setBar(document.getElementById("bwA"), jPct(v.rent), "월세");
+    setBar(document.getElementById("bwB"), jPct(oppW), "기회비용");
+    setBar(document.getElementById("bwC"), jPct(v.maintW), "관리비");
+    out.barJeonseLabel.textContent = won(monthlyJ);
+    out.barWolseLabel.textContent = won(monthlyW);
+
+    /* 계산식 */
+    out.formula.innerHTML =
+      "<b>전세</b> = 대출이자 " + won(interest) + " + 기회비용 " + won(oppJ) +
+      " + 관리비 " + won(v.maintJ) + " = <b>" + won(monthlyJ) + "</b><br>" +
+      "<b>월세</b> = 월세 " + won(v.rent) + " + 관리비 " + won(v.maintW) +
+      " + 보증금 기회비용 " + won(oppW) + " = <b>" + won(monthlyW) + "</b><br>" +
+      "대출이자 = " + SL.formatMan(loan) + " × " + v.loanRate + "% ÷ 12 · 기회비용 = 자기자본 " +
+      SL.formatMan(ownCapital) + " × " + v.oppRate + "% ÷ 12";
+
+    /* 전환율 해석 */
+    if (beRate === null) {
+      out.rateNote.textContent = "월세 보증금이 전세 보증금보다 커서 전환율을 계산할 수 없습니다. 보증금 조건을 확인해 주세요.";
+    } else {
+      var better = marketRate > beRate ? "전세" : "월세";
+      out.rateNote.textContent = "현재 전환율 " + pct(marketRate) + "가 손익분기 전환율 " + pct(beRate) +
+        "보다 " + (marketRate > beRate ? "높" : "낮") + "으므로 이 조건에서는 " + better +
+        "가 유리합니다. 전환율은 (월세×12)÷보증금 차액×100, 손익분기는 두 선택의 월 총비용이 같아지는 지점입니다.";
+    }
+  }
+
+  /* 정수 입력 콤마 */
+  ["dJeonse", "loan", "maintJ", "dWolse", "rent", "maintW"].forEach(function (id) {
+    SL.bindCommaInput(input[id]);
+  });
+
+  ids.forEach(function (id) {
+    input[id].addEventListener("input", calculate);
+    input[id].addEventListener("change", calculate);
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", function () {
+    ids.forEach(function (id) {
+      var val = DEFAULTS[id];
+      var isMan = ["dJeonse", "loan", "maintJ", "dWolse", "rent", "maintW"].indexOf(id) !== -1;
+      input[id].value = isMan ? Number(val).toLocaleString("ko-KR") : val;
+    });
+    calculate();
+  });
+
+  calculate();
+})();
+</script>
+</body>
+</html>

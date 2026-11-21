@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# 수익화·도구 페이지는 모두 색인 허용. 관리용 파일은 없습니다.
+Sitemap: https://sseulmolab.com/sitemap.xml

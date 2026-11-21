@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <!-- ===== SITE META ===== -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>주식·ETF 물타기 평단가 계산기 — 목표가·손익분기 계산 | 쓸모랩</title>
+  <meta name="description" content="보유 평단가와 수량, 추가 매수 단가와 수량(또는 금액)을 넣으면 최종 평단가와 총 투자금, 손익분기점, 목표 수익률에 맞는 매도가를 바로 계산합니다.">
+  <meta name="keywords" content="물타기 계산기, 평단가 계산기, 주식 평단, 목표가 계산, 분할매수, ETF 평단">
+  <meta name="author" content="쓸모랩">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://sseulmolab.com/stock-calc/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="쓸모랩">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="주식·ETF 물타기 평단가 계산기">
+  <meta property="og:description" content="추가 매수 후 최종 평단가, 총 투자금, 손익분기점, 목표 매도가를 한 번에.">
+  <meta property="og:url" content="https://sseulmolab.com/stock-calc/">
+  <meta property="article:modified_time" content="2026-11-21">
+  <meta name="twitter:card" content="summary">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <!-- ===== /SITE META ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "쓸모랩", "item": "https://sseulmolab.com/" },
+      { "@type": "ListItem", "position": 2, "name": "주식 물타기 계산기", "item": "https://sseulmolab.com/stock-calc/" }
+    ]
+  }
+  </script>
+</head>
+<body>
+<a class="skip-link" href="#main">본문으로 바로 가기</a>
+
+<!-- ===== 공통 헤더 ===== -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="../index.html" aria-label="쓸모랩 홈">
+      <span class="brand-mark" aria-hidden="true">쓸</span>
+      쓸모랩<span class="brand-dot">.</span>
+    </a>
+    <nav class="nav" aria-label="주요 메뉴">
+      <a href="../trend-2026/index.html">트렌드 고사</a>
+      <a href="../jeonse-calc/index.html">전세·월세</a>
+      <a href="index.html" aria-current="page">주식 평단</a>
+      <a href="../about.html">소개</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="page-head">
+    <div class="wrap">
+      <div class="crumbs"><a href="../index.html">홈</a> › 주식 물타기 계산기</div>
+      <h1>물타기 평단가·목표가 계산기</h1>
+      <p>추가로 살 단가와 수량(또는 금액)을 넣으면 최종 평단가와 총 투자금, 손익분기점, 목표 수익률에 맞는 매도가를 계산합니다. 결과를 보고 살지 말지 정하는 건 당신의 몫입니다.</p>
+    </div>
+  </div>
+
+  <section class="section" style="padding-top:16px">
+    <div class="wrap">
+      <div class="tool-shell">
+        <div class="calc-layout">
+
+          <form id="calcForm" autocomplete="off" novalidate>
+            <div class="field-group">
+              <div class="field-group-title"><span class="dot" aria-hidden="true"></span>지금 보유한 물량</div>
+              <div class="input-row" style="gap:10px">
+                <label class="field" style="flex:1.2">
+                  <span>보유 평단가</span>
+                  <div class="input-wrap">
+                    <input id="avgPrice" type="text" inputmode="numeric" value="50000">
+                    <span class="unit">원</span>
+                  </div>
+                </label>
+                <label class="field" style="flex:1">
+                  <span>보유 수량</span>
+                  <div class="input-wrap">
+                    <input id="qty" type="text" inputmode="numeric" value="100">
+                    <span class="unit">주</span>
+                  </div>
+                </label>
+              </div>
+              <small class="field-hint" id="holdHint">평가금액 5,000,000원</small>
+            </div>
+
+            <div class="field-group">
+              <div class="field-group-title"><span class="dot coral" aria-hidden="true"></span>추가 매수 계획</div>
+              <label class="field">
+                <span>추가 매수 단가</span>
+                <div class="input-wrap">
+                  <input id="addPrice" type="text" inputmode="numeric" value="40000">
+                  <span class="unit">원</span>
+                </div>
+                <small class="field-hint" id="addPriceHint">평단가 대비 -20.0%</small>
+              </label>
+
+              <div class="field">
+                <span>매수 방식</span>
+                <div class="segmented" role="group" aria-label="추가 매수 입력 방식">
+                  <button type="button" id="modeQty" aria-pressed="true">수량으로</button>
+                  <button type="button" id="modeAmt" aria-pressed="false">금액으로</button>
+                </div>
+              </div>
+
+              <label class="field" id="fieldQty">
+                <span>추가 매수 수량</span>
+                <div class="input-wrap">
+                  <input id="addQty" type="text" inputmode="numeric" value="100">
+                  <span class="unit">주</span>
+                </div>
+                <small class="field-hint" id="addQtyHint">투입금 4,000,000원</small>
+              </label>
+
+              <label class="field" id="fieldAmt" hidden>
+                <span>추가 매수 금액</span>
+                <div class="input-wrap">
+                  <input id="addAmount" type="text" inputmode="numeric" value="4000000">
+                  <span class="unit">원</span>
+                </div>
+                <small class="field-hint" id="addAmtHint">4,000,000원으로 100주</small>
+              </label>
+            </div>
+
+            <div class="field-group">
+              <div class="field-group-title"><span class="dot green" aria-hidden="true"></span>목표</div>
+              <label class="field">
+                <span>목표 수익률 (평단 대비)</span>
+                <div class="input-wrap">
+                  <input id="targetPct" type="text" inputmode="decimal" value="10">
+                  <span class="unit">%</span>
+                </div>
+                <small class="field-hint">최종 평단가에서 이만큼 오르면 목표가</small>
+              </label>
+            </div>
+
+            <div class="cta-row">
+              <button class="btn btn-primary" type="button" id="resetBtn">예시값으로 초기화</button>
+            </div>
+          </form>
+
+          <div class="results" id="results" aria-live="polite">
+            <div class="result-hero">
+              <div class="verdict" id="verdictLabel">추가 매수 후</div>
+              <div class="big" id="verdictBig">—</div>
+              <p class="sub" id="verdictSub"></p>
+            </div>
+
+            <dl class="stat-grid">
+              <div class="stat hl">
+                <dt>손익분기점 (평단)</dt>
+                <dd id="sAvg">—</dd>
+              </div>
+              <div class="stat">
+                <dt>총 투자금</dt>
+                <dd id="sCost">—</dd>
+              </div>
+              <div class="stat">
+                <dt>총 보유 수량</dt>
+                <dd id="sQty">—</dd>
+              </div>
+              <div class="stat hl">
+                <dt>목표 매도가</dt>
+                <dd id="sTarget">—</dd>
+              </div>
+            </dl>
+
+            <div class="bars">
+              <div class="bar-row">
+                <div class="bar-label"><span>기존 평단</span><span id="barOldLabel">—</span></div>
+                <div class="bar-track"><div class="bar-seg seg-blue" id="bOld"></div></div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label"><span>최종 평단</span><span id="barNewLabel">—</span></div>
+                <div class="bar-track"><div class="bar-seg seg-blue-2" id="bNew"></div></div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label"><span>목표 매도가</span><span id="barTargetLabel">—</span></div>
+                <div class="bar-track"><div class="bar-seg seg-coral" id="bTarget"></div></div>
+              </div>
+            </div>
+
+            <div class="formula" id="formulaBox"></div>
+            <p class="note-inline" id="profitNote"></p>
+          </div>
+
+        </div>
+      </div>
+
+      <p class="disclaimer">
+        이 계산기는 수수료와 세금(증권거래세·배당소득세 등), 환율, 호가 단위, 소수점 매매를 반영하지 않습니다. 손익분기점은 평단가와 같다고 가정한 값이며, 실제 매매에서는 매수·매도 수수료와 세금 때문에 그보다 조금 위에서 손익이 0이 됩니다. 계산 결과는 투자 권유가 아닙니다.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:6px">
+    <div class="wrap">
+      <article class="article">
+        <p class="updated" style="margin-top:0">2026년 11월 21일 기준 · 읽는 시간 약 5분</p>
+        <h2 style="border-top:0;padding-top:0;margin-top:0">물타기 전 체크할 기준과 분할매수 계산법</h2>
+        <p>물타기는 평단가를 낮추는 기술이지, 손실을 없애는 기술이 아닙니다. 5만 원에 산 주식이 4만 원이 됐을 때 4만 원에 더 사면 평단은 내려가지만, <strong>총 투자금과 총 위험은 늘어납니다</strong>. 그래서 물타기는 “얼마나 더 넣을 수 있는가”보다 “이 하락이 내가 아는 이유 때문인가”를 먼저 확인하는 절차입니다. 아래는 계산기와 함께 쓰는 세 가지 기준과, 실제 분할매수 금액을 정하는 방법입니다.</p>
+
+        <h2>1. 평단가와 손익분기점은 이렇게 계산합니다</h2>
+        <p>추가 매수 후 평단가는 단순합니다. <strong>최종 평단가 = (기존 평단가 × 기존 수량 + 추가 단가 × 추가 수량) ÷ (기존 수량 + 추가 수량)</strong>. 예를 들어 5만 원에 100주를 갖고 있고 4만 원에 100주를 더 사면, 총 투자금 900만 원 ÷ 200주 = <strong>4만 5,000원</strong>입니다. 평단이 10% 내려갔지만, 주가가 4만 5,000원이 되어야 본전이라는 사실은 그대로입니다. 즉 물타기의 효과는 ‘본전까지 필요한 상승률’을 낮추는 데 있습니다. 5만 원 기준으로는 25% 올라야 본전이지만, 평단 4만 5,000원 기준으로는 12.5%만 오르면 됩니다.</p>
+        <p>여기서 자주 놓치는 것이 <strong>총 투자금의 증가</strong>입니다. 위 예시에서 손실률은 20%에서 11%로 줄어 보이지만, 손실 금액은 100만 원에서 100만 원 그대로입니다(200주 × 5,000원). 오히려 주가가 더 떨어지면 손실 금액은 두 배 속도로 늘어납니다. 계산기에서 ‘총 투자금’과 ‘추가 투입 비중’을 함께 보여 주는 이유입니다.</p>
+
+        <h2>2. 물타기 전에 확인할 세 가지</h2>
+        <p><strong>첫째, 하락의 이유를 설명할 수 있어야 합니다.</strong> 시장 전체가 빠져서 같이 빠진 것인지, 실적·가이던스·소송·상장폐지 우려처럼 기업 자체의 문제인지에 따라 대응이 완전히 다릅니다. 후자라면 평단을 낮추는 것이 아니라 비중을 줄이는 판단이 맞을 수 있습니다. “싸졌으니까”만으로 추가 매수 버튼을 누르는 것이 가장 흔한 실패 패턴입니다.</p>
+        <p><strong>둘째, 종목 비중에 상한을 미리 정해야 합니다.</strong> 전체 투자금의 몇 %까지 이 종목에 넣을지 정하고, 그 한도 안에서만 분할합니다. 물타기를 반복하면 어느새 포트폴리오의 절반이 한 종목이 되어, 그 종목 하나의 뉴스에 전체 자산이 흔들립니다. 계산기에서 ‘추가 투입 비중’을 확인해 30~40%를 넘지 않는지 스스로 점검해 보세요.</p>
+        <p><strong>셋째, 물타기와 손절 기준을 같은 문서에 적어야 합니다.</strong> “-20%에서 한 번 더 사고, 그 아래로 -35%가 되면 정리한다”처럼 매수와 매도 조건을 함께 적습니다. 매수 조건만 적으면 하락이 깊어질수록 기준이 흔들립니다. 목표 수익률도 같이 적어 두면, 평단이 내려간 뒤 목표가가 얼마인지 매번 다시 계산할 필요가 없습니다.</p>
+
+        <h2>3. 분할매수 금액을 정하는 방법</h2>
+        <p>분할매수는 한 번에 넣을 금액을 3~4회로 나누고, 미리 정한 가격대에서만 집행하는 방식입니다. 예를 들어 5만 원에 100주(500만 원)를 보유하고 총 400만 원을 더 넣을 수 있다면, 아래처럼 나눌 수 있습니다.</p>
+        <table>
+          <thead>
+            <tr><th>구분</th><th>가격</th><th>금액</th><th>수량</th><th>누적 평단</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>보유</td><td>50,000원</td><td>500만 원</td><td>100주</td><td>50,000원</td></tr>
+            <tr><td>1차</td><td>45,000원</td><td>200만 원</td><td>44주</td><td>약 48,470원</td></tr>
+            <tr><td>2차</td><td>40,000원</td><td>200만 원</td><td>50주</td><td>약 46,290원</td></tr>
+          </tbody>
+        </table>
+        <p>이렇게 하면 평단은 5만 원에서 4만 6,290원으로 약 7.4% 내려가고, 본전까지 필요한 상승률은 25%에서 7.4%로 줄어듭니다. 대신 총 투자금은 500만 원에서 900만 원으로 늘었습니다. 여기서 중요한 것은 <strong>1차 매수 가격에 도달하지 않으면 아무것도 사지 않는다</strong>는 규칙입니다. 가격이 내려오지 않는데 ‘기회를 놓칠까 봐’ 사는 것은 분할매수가 아니라 추격매수입니다.</p>
+        <p>금액을 균등하게 나눌지, 수량을 균등하게 나눌지도 정해야 합니다. 금액 균등 분할은 하락할수록 더 많은 주식을 사게 되어 평단 하락 효과가 크지만, 하락이 깊어질 때 투입 속도가 빨라집니다. 수량 균등 분할은 계산이 단순하고 위험이 일정하지만 평단 하락 효과는 작습니다. 정답은 없고, 감당할 수 있는 총액이 먼저입니다.</p>
+
+        <h2>4. ETF와 개별주는 기준이 다릅니다</h2>
+        <p>지수형 ETF는 개별 기업의 악재처럼 ‘이 회사가 사라질 위험’이 상대적으로 작기 때문에, 장기 적립식으로 평단을 관리하는 접근이 잘 맞습니다. 반면 개별주는 실적 부진이나 구조적 산업 변화로 주가가 회복되지 않는 경우가 있어, 평단을 낮추는 것보다 비중을 줄이는 판단이 나을 때가 많습니다. 배당주라면 배당수익률과 배당 지속성을 함께 봐야 하고, 레버리지·인버스 ETF는 횡보장에서 가치가 녹는 구조라 물타기 대상으로 부적합한 경우가 많습니다.</p>
+
+        <div class="callout warn">
+          <strong>계산기 결과를 읽는 순서</strong><br>
+          ① 최종 평단가가 내 판단 근거(가치·차트)와 맞는 가격인가. ② 총 투자금이 내가 감당할 수 있는 금액인가. ③ 목표 매도가에 닿았을 때의 수익금이 리스크에 비해 충분한가. ④ 손절 기준을 정했는가. 네 가지 중 하나라도 비어 있으면 매수하지 않는 것이 규칙입니다.
+        </div>
+        <p>마지막으로, 이 계산기의 목표 매도가는 ‘평단 대비 수익률’ 기준입니다. 시장 상황이나 기업 가치와 무관한 기계적 목표라는 점을 기억해야 합니다. 수수료와 세금을 빼면 실제 손익분기점은 계산된 평단보다 조금 위에 있습니다. 자주 매매할수록 그 차이가 커지므로, 목표 수익률을 아주 작게 잡는 것은 비용 구조상 불리할 수 있습니다.</p>
+      </article>
+
+      <div class="section" style="padding-bottom:0">
+        <div class="section-head"><h2>다른 도구도 써 보세요</h2></div>
+        <div class="card-grid">
+          <a class="tool-card" href="../jeonse-calc/index.html">
+            <span class="tool-icon" aria-hidden="true">🏠</span>
+            <h3>전세 vs 월세 계산기</h3>
+            <p>대출 이자와 기회비용까지 반영한 실질 주거비 비교.</p>
+            <span class="tool-go">계산해 보기</span>
+          </a>
+          <a class="tool-card" href="../trend-2026/index.html">
+            <span class="tool-icon coral" aria-hidden="true">🎯</span>
+            <h3>2026 트렌드 고사</h3>
+            <p>올해의 밈·신조어 10문항, 점수와 해설.</p>
+            <span class="tool-go">테스트 시작</span>
+          </a>
+          <a class="tool-card" href="../index.html">
+            <span class="tool-icon" aria-hidden="true">🗂️</span>
+            <h3>쓸모랩 홈</h3>
+            <p>전체 도구 목록과 사이트 소개.</p>
+            <span class="tool-go">둘러보기</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ===== 공통 푸터 ===== -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      쓸모랩
+      <span>생활 계산기와 가벼운 테스트로 매일의 판단을 조금 더 쉽게.</span>
+    </div>
+    <nav class="footer-links" aria-label="바닥글 메뉴">
+      <a href="../about.html">사이트 소개</a>
+      <a href="../privacy.html">개인정보처리방침</a>
+      <a href="../trend-2026/index.html">트렌드 고사</a>
+      <a href="../jeonse-calc/index.html">전세·월세</a>
+      <a href="../stock-calc/index.html">주식 평단</a>
+      <a href="mailto:hello@sseulmolab.com">문의</a>
+    </nav>
+    <div class="footer-legal">
+      <p>쓸모랩의 계산 결과는 입력값에 기반한 참고용 추정치이며 금융·법률·투자 자문이 아닙니다. 실제 계약 조건과 금융기관 기준에 따라 달라질 수 있습니다.</p>
+      <p>© <span data-year>2026</span> 쓸모랩 (Sseulmo Lab) · 문의 hello@sseulmolab.com</p>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/common.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var input = {
+    avgPrice: document.getElementById("avgPrice"),
+    qty: document.getElementById("qty"),
+    addPrice: document.getElementById("addPrice"),
+    addQty: document.getElementById("addQty"),
+    addAmount: document.getElementById("addAmount"),
+    targetPct: document.getElementById("targetPct")
+  };
+
+  var DEFAULTS = { avgPrice: 50000, qty: 100, addPrice: 40000, addQty: 100, addAmount: 4000000, targetPct: 10 };
+  var mode = "qty";
+
+  var out = {
+    verdictLabel: document.getElementById("verdictLabel"),
+    verdictBig: document.getElementById("verdictBig"),
+    verdictSub: document.getElementById("verdictSub"),
+    sAvg: document.getElementById("sAvg"),
+    sCost: document.getElementById("sCost"),
+    sQty: document.getElementById("sQty"),
+    sTarget: document.getElementById("sTarget"),
+    formula: document.getElementById("formulaBox"),
+    profitNote: document.getElementById("profitNote")
+  };
+
+  function won(n) { return SL.formatWon(Math.round(n)); }
+  function priceFmt(v) {
+    if (!isFinite(v)) return "—";
+    return v >= 100 ? Math.round(v).toLocaleString("ko-KR") + "원"
+                    : v.toFixed(2) + "원";
+  }
+
+  function setBar(el, width, label) {
+    el.style.width = Math.max(0, Math.min(100, width)) + "%";
+    el.textContent = width >= 16 ? label : "";
+  }
+
+  function calc() {
+    var avg = Math.max(0, SL.num(input.avgPrice.value));
+    var qty = Math.max(0, Math.floor(SL.num(input.qty.value)));
+    var addPrice = Math.max(0, SL.num(input.addPrice.value));
+    var targetPct = SL.num(input.targetPct.value);
+
+    var addQty;
+    if (mode === "qty") {
+      addQty = Math.max(0, Math.floor(SL.num(input.addQty.value)));
+    } else {
+      var amount = Math.max(0, SL.num(input.addAmount.value));
+      addQty = addPrice > 0 ? Math.floor(amount / addPrice) : 0;
+      document.getElementById("addAmtHint").textContent =
+        addPrice > 0
+          ? won(amount) + "으로 " + addQty.toLocaleString("ko-KR") + "주 (잔액 " + won(amount - addQty * addPrice) + ")"
+          : "추가 매수 단가를 먼저 입력하세요";
+    }
+
+    var oldCost = avg * qty;
+    var addCost = addPrice * addQty;
+    var totalCost = oldCost + addCost;
+    var totalQty = qty + addQty;
+    var newAvg = totalQty > 0 ? totalCost / totalQty : 0;
+    var targetPrice = newAvg * (1 + targetPct / 100);
+    var profitAtTarget = totalCost * (targetPct / 100);
+    var valueAtTarget = targetPrice * totalQty;
+
+    /* 힌트 */
+    document.getElementById("holdHint").textContent = "평가금액 " + won(oldCost);
+    var dropFromAvg = avg > 0 ? ((addPrice - avg) / avg) * 100 : 0;
+    document.getElementById("addPriceHint").textContent =
+      avg > 0 && addPrice > 0
+        ? "기존 평단 대비 " + (dropFromAvg >= 0 ? "+" : "") + dropFromAvg.toFixed(1) + "%"
+        : "추가 매수 단가를 입력하세요";
+    if (mode === "qty") {
+      document.getElementById("addQtyHint").textContent = "투입금 " + won(addCost);
+    }
+
+    /* 결과 카드 */
+    if (totalQty === 0) {
+      out.verdictLabel.textContent = "입력값을 확인하세요";
+      out.verdictBig.textContent = "—";
+      out.verdictSub.textContent = "보유 수량과 추가 매수 단가·수량을 입력하면 계산됩니다.";
+      out.sAvg.textContent = "—"; out.sCost.textContent = "—";
+      out.sQty.textContent = "—"; out.sTarget.textContent = "—";
+      out.formula.innerHTML = "";
+      out.profitNote.textContent = "";
+      return;
+    }
+
+    out.verdictLabel.innerHTML = addQty > 0
+      ? '<span class="badge ok">추가 매수 반영</span>'
+      : '<span class="badge">추가 매수 없음</span>';
+    out.verdictBig.innerHTML = priceFmt(newAvg);
+    var change = newAvg - avg;
+    var changePct = avg > 0 ? (change / avg) * 100 : 0;
+    var changePctText = changePct.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
+    out.verdictSub.textContent = "기존 평단 " + priceFmt(avg) + " → " +
+      (change === 0 ? "변동 없음"
+        : (change < 0 ? "▼ " : "▲ ") + priceFmt(Math.abs(change)) +
+          " (" + (change < 0 ? "" : "+") + changePctText + "%)") +
+      " · 총 " + totalQty.toLocaleString("ko-KR") + "주";
+
+    out.sAvg.textContent = priceFmt(newAvg);
+    out.sCost.textContent = won(totalCost);
+    out.sQty.textContent = totalQty.toLocaleString("ko-KR") + "주";
+    out.sTarget.textContent = priceFmt(targetPrice);
+
+    /* 바 */
+    var scale = Math.max(avg, newAvg, targetPrice, 1);
+    setBar(document.getElementById("bOld"), (avg / scale) * 100, priceFmt(avg));
+    setBar(document.getElementById("bNew"), (newAvg / scale) * 100, priceFmt(newAvg));
+    setBar(document.getElementById("bTarget"), (targetPrice / scale) * 100, priceFmt(targetPrice));
+    document.getElementById("barOldLabel").textContent = priceFmt(avg);
+    document.getElementById("barNewLabel").textContent = priceFmt(newAvg);
+    document.getElementById("barTargetLabel").textContent = priceFmt(targetPrice);
+
+    /* 계산식 */
+    out.formula.innerHTML =
+      "최종 평단 = (기존 " + priceFmt(avg) + " × " + qty.toLocaleString("ko-KR") + "주 + " +
+      priceFmt(addPrice) + " × " + addQty.toLocaleString("ko-KR") + "주) ÷ " +
+      totalQty.toLocaleString("ko-KR") + "주 = <b>" + priceFmt(newAvg) + "</b><br>" +
+      "총 투자금 " + won(totalCost) + " · 추가 투입 " + won(addCost) +
+      " (전체의 " + (totalCost > 0 ? (addCost / totalCost * 100).toFixed(1) : "0") + "%)";
+
+    out.profitNote.textContent =
+      "목표가 " + priceFmt(targetPrice) + "에 도달하면 평가금액 " + won(valueAtTarget) +
+      ", 수익금 약 " + won(profitAtTarget) + "입니다. 손익분기점은 최종 평단과 같다고 보고 계산했으며, 수수료·세금은 반영하지 않았습니다.";
+  }
+
+  /* 입력 */
+  ["avgPrice", "qty", "addPrice", "addQty", "addAmount"].forEach(function (k) {
+    SL.bindCommaInput(input[k]);
+    input[k].addEventListener("input", calc);
+  });
+  input.targetPct.addEventListener("input", calc);
+
+  var btnQty = document.getElementById("modeQty");
+  var btnAmt = document.getElementById("modeAmt");
+  var fieldQty = document.getElementById("fieldQty");
+  var fieldAmt = document.getElementById("fieldAmt");
+
+  function setMode(next) {
+    mode = next;
+    var isQty = next === "qty";
+    btnQty.setAttribute("aria-pressed", String(isQty));
+    btnAmt.setAttribute("aria-pressed", String(!isQty));
+    fieldQty.hidden = !isQty;
+    fieldAmt.hidden = isQty;
+    calc();
+  }
+  btnQty.addEventListener("click", function () { setMode("qty"); });
+  btnAmt.addEventListener("click", function () { setMode("amt"); });
+
+  document.getElementById("resetBtn").addEventListener("click", function () {
+    Object.keys(DEFAULTS).forEach(function (k) {
+      input[k].value = k === "targetPct"
+        ? String(DEFAULTS[k])
+        : DEFAULTS[k].toLocaleString("ko-KR");
+    });
+    setMode("qty");
+  });
+
+  setMode("qty");
+})();
+</script>
+</body>
+</html>
